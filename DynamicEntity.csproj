@@ -37,7 +37,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Microsoft.Crm.Sdk.Samples.AssociateDisassociateDE</StartupObject>
+    <StartupObject>Microsoft.Crm.Sdk.Samples.CreateContactAssociateAccount</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Crm.Sdk.Proxy">
@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="AssociateDisassociateDE.cs" />
     <Compile Include="CompoundCreateUpdateDE.cs" />
+    <Compile Include="CreateContactAssociateAccount.cs" />
     <Compile Include="CrmServiceHelpers.cs" />
     <Compile Include="CRUDOperationsDE.cs" />
     <Compile Include="DeviceIdManager.cs" />

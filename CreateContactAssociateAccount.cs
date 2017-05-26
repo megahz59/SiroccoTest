@@ -36,7 +36,7 @@ namespace Microsoft.Crm.Sdk.Samples
     /// If you want to run this sample repeatedly, you have the option to 
     /// delete all the records created at the end of execution.
     /// </summary>
-    public class CRUDOperationsDE
+    public class CreateContactAssociateAccount 
     {
         #region Class Level Members
         /// <summary>
@@ -63,7 +63,7 @@ namespace Microsoft.Crm.Sdk.Samples
         /// all created entities.</param>
         public void Run(ServerConnection.Configuration serverConfig, bool promptForDelete)
         {
-            AccountModel accountModel = new AccountModel();
+            AccountModel accountModel  = new AccountModel();
 
             while (true)
             {
@@ -79,58 +79,58 @@ namespace Microsoft.Crm.Sdk.Samples
                 }
             }
 
-            Console.Write("Adress Row 1: ");
-            accountModel.AdressRow1 = Console.ReadLine();
-            Console.Write("Adress Row 2: ");
-            accountModel.AdressRow2 = Console.ReadLine();
-            while (true)
-            {
-                Console.Write("Expected Revenue: ");
-                string tempRevenue = Console.ReadLine();
-                int tempIntRevenue = 0;
+            //Console.Write("Adress Row 1: ");
+            //accountModel.AdressRow1 = Console.ReadLine();
+            //Console.Write("Adress Row 2: ");
+            //accountModel.AdressRow2 = Console.ReadLine();
+            //while (true)
+            //{
+            //    Console.Write("Expected Revenue: ");
+            //    string tempRevenue = Console.ReadLine();
+            //    int tempIntRevenue = 0;
 
-                bool result = Int32.TryParse(tempRevenue, out tempIntRevenue);
-                if (result)
-                {
-                    accountModel.Revenue = tempIntRevenue;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Attempted conversion of '{0}' failed.",
-                                       tempRevenue == null ? "<null>" : tempRevenue);
-                }
+            //    bool result = Int32.TryParse(tempRevenue, out tempIntRevenue);
+            //    if (result)
+            //    {
+            //        accountModel.Revenue = tempIntRevenue;
+            //        break;
+            //    }
+            //    else
+            //    {
+            //        Console.WriteLine("Attempted conversion of '{0}' failed.",
+            //                           tempRevenue == null ? "<null>" : tempRevenue);
+            //    }
 
-            }
+            //}
 
-            char tempAccountName = ' ';
-            Console.Write("Credit limit? (y/n) [y]: ");
-            try
-            {
-                tempAccountName = Console.ReadLine()[0];
-                if (tempAccountName == 'n')
-                {
-                    accountModel.CreditOnHold = false;
-                    Console.WriteLine("Credit was set to no");
-                }
-                else
-                {
-                    accountModel.CreditOnHold = true;
-                    Console.WriteLine("Credit was set to yes");
-                }
-            }
-            catch (Exception)
-            {
-                accountModel.CreditOnHold = true;
-                Console.WriteLine("Credit was set to yes");
-            }
+            //char tempAccountName = ' ';
+            //Console.Write("Credit limit? (y/n) [y]: ");
+            //try
+            //{
+            //    tempAccountName = Console.ReadLine()[0];
+            //    if (tempAccountName == 'n')
+            //    {
+            //        accountModel.CreditOnHold = false;
+            //        Console.WriteLine("Credit was set to no");
+            //    }
+            //    else
+            //    {
+            //        accountModel.CreditOnHold = true;
+            //        Console.WriteLine("Credit was set to yes");
+            //    }
+            //}
+            //catch (Exception)
+            //{
+            //    accountModel.CreditOnHold = true;
+            //    Console.WriteLine("Credit was set to yes");
+            //}
 
             try
             {
 
                 // Connect to the Organization service. 
                 // The using statement assures that the service proxy will be properly disposed.
-                using (_serviceProxy = new OrganizationServiceProxy(serverConfig.OrganizationUri, serverConfig.HomeRealmUri,  serverConfig.Credentials, serverConfig.DeviceCredentials))
+                using (_serviceProxy = new OrganizationServiceProxy(serverConfig.OrganizationUri, serverConfig.HomeRealmUri, serverConfig.Credentials, serverConfig.DeviceCredentials))
                 {
                     _service = (IOrganizationService)_serviceProxy;
 
@@ -144,64 +144,67 @@ namespace Microsoft.Crm.Sdk.Samples
                     account["name"] = accountModel.AccountName;
 
                     // Create an account record named Fourth Coffee.
-                    _accountId = _service.Create(account);
+                    //_accountId = _service.Create(account);
 
-                    Console.Write("{0} {1} created, ", account.LogicalName, account.Attributes["name"]);
+                    //Console.Write("{0} {1} created, ", account.LogicalName, account.Attributes["name"]);
 
                     // Create a column set to define which attributes should be retrieved.
-                    ColumnSet attributes = new ColumnSet(new string[] { "name", "ownerid" });
+                    ColumnSet attributes = new ColumnSet(new string[] { "name", "ownerid", "address1_postalcode", "address2_postalcode", "revenue", "creditonhold" });
 
                     // Retrieve the account and its name and ownerid attributes.
                     account = _service.Retrieve(account.LogicalName, _accountId, attributes);
                     Console.Write("retrieved, ");
 
-                    // Update the postal code attribute.
-                    if (accountModel.AdressRow1 != string.Empty)
-                    {
-                        account["address1_postalcode"] = accountModel.AdressRow1;
-                    }
-                    else
-                    {
-                        account["address1_postalcode"] = null;
-                    }
+                    Console.WriteLine(account["name"]);
+                    Console.WriteLine(account["ownerid"]);
 
-                    // The address 2 postal code was set accidentally, so set it to null.
-                    if (accountModel.AdressRow2 != string.Empty)
-                    {
-                        account["addres2_postalcode"] = accountModel.AdressRow2;
-                    }
-                    else
-                    {
-                        account["address2_postalcode"] = null;
-                    }
+                    //// Update the postal code attribute.
+                    //if (accountModel.AdressRow1 != string.Empty)
+                    //{
+                    //    account["address1_postalcode"] = accountModel.AdressRow1;
+                    //}
+                    //else
+                    //{
+                    //    account["address1_postalcode"] = null;
+                    //}
 
-                    // Shows use of Money.
-                    account["revenue"] = new Money(accountModel.Revenue);
+                    //// The address 2 postal code was set accidentally, so set it to null.
+                    //if (accountModel.AdressRow2 != string.Empty)
+                    //{
+                    //    account["addres2_postalcode"] = accountModel.AdressRow2;
+                    //}
+                    //else
+                    //{
+                    //    account["address2_postalcode"] = null;
+                    //}
 
-                    // Shows use of boolean.
-                    account["creditonhold"] = accountModel.CreditOnHold;
+                    //// Shows use of Money.
+                    //account["revenue"] = new Money(accountModel.Revenue);
 
-                    // Update the account.
-                    _service.Update(account);
-                    Console.WriteLine("and updated.");
+                    //// Shows use of boolean.
+                    //account["creditonhold"] = accountModel.CreditOnHold;
 
-                    // Delete the account.
-                    bool deleteRecords = true;
+                    //// Update the account.
+                    //_service.Update(account);
+                    //Console.WriteLine("and updated.");
 
-                    if (promptForDelete)
-                    {
-                        Console.WriteLine("\nDo you want these entity records deleted? (y/n) [y]: ");
-                        String answer = Console.ReadLine();
+                    //// Delete the account.
+                    //bool deleteRecords = true;
 
-                        deleteRecords = (answer.StartsWith("y") || answer.StartsWith("Y") || answer == String.Empty);
-                    }
+                    //if (promptForDelete)
+                    //{
+                    //    Console.WriteLine("\nDo you want these entity records deleted? (y/n) [y]: ");
+                    //    String answer = Console.ReadLine();
 
-                    if (deleteRecords)
-                    {
-                        _service.Delete("account", _accountId);
+                    //    deleteRecords = (answer.StartsWith("y") || answer.StartsWith("Y") || answer == String.Empty);
+                    //}
 
-                        Console.WriteLine("Entity record(s) have been deleted.");
-                    }
+                    //if (deleteRecords)
+                    //{
+                    //    _service.Delete("account", _accountId);
+
+                    //    Console.WriteLine("Entity record(s) have been deleted.");
+                    //}
 
                     //</snippetCRUDOperationsDE1>
                 }
