@@ -36,7 +36,7 @@ namespace Microsoft.Crm.Sdk.Samples
     /// If you want to run this sample repeatedly, you have the option to 
     /// delete all the records created at the end of execution.
     /// </summary>
-    public class CreateContactAssociateAccount 
+    public class CreateContactAssociateAccount
     {
         #region Class Level Members
         /// <summary>
@@ -46,7 +46,7 @@ namespace Microsoft.Crm.Sdk.Samples
         private IOrganizationService _service;
 
         // Define the IDs needed for this sample.
-        private Guid _accountId;
+        //private Guid _accountId;
 
         #endregion Class Level Members
 
@@ -63,7 +63,7 @@ namespace Microsoft.Crm.Sdk.Samples
         /// all created entities.</param>
         public void Run(ServerConnection.Configuration serverConfig, bool promptForDelete)
         {
-            AccountModel accountModel  = new AccountModel();
+            AccountModel accountModel = new AccountModel();
 
             while (true)
             {
@@ -79,55 +79,9 @@ namespace Microsoft.Crm.Sdk.Samples
                 }
             }
 
-            //Console.Write("Adress Row 1: ");
-            //accountModel.AdressRow1 = Console.ReadLine();
-            //Console.Write("Adress Row 2: ");
-            //accountModel.AdressRow2 = Console.ReadLine();
-            //while (true)
-            //{
-            //    Console.Write("Expected Revenue: ");
-            //    string tempRevenue = Console.ReadLine();
-            //    int tempIntRevenue = 0;
-
-            //    bool result = Int32.TryParse(tempRevenue, out tempIntRevenue);
-            //    if (result)
-            //    {
-            //        accountModel.Revenue = tempIntRevenue;
-            //        break;
-            //    }
-            //    else
-            //    {
-            //        Console.WriteLine("Attempted conversion of '{0}' failed.",
-            //                           tempRevenue == null ? "<null>" : tempRevenue);
-            //    }
-
-            //}
-
-            //char tempAccountName = ' ';
-            //Console.Write("Credit limit? (y/n) [y]: ");
-            //try
-            //{
-            //    tempAccountName = Console.ReadLine()[0];
-            //    if (tempAccountName == 'n')
-            //    {
-            //        accountModel.CreditOnHold = false;
-            //        Console.WriteLine("Credit was set to no");
-            //    }
-            //    else
-            //    {
-            //        accountModel.CreditOnHold = true;
-            //        Console.WriteLine("Credit was set to yes");
-            //    }
-            //}
-            //catch (Exception)
-            //{
-            //    accountModel.CreditOnHold = true;
-            //    Console.WriteLine("Credit was set to yes");
-            //}
 
             try
             {
-
                 // Connect to the Organization service. 
                 // The using statement assures that the service proxy will be properly disposed.
                 using (_serviceProxy = new OrganizationServiceProxy(serverConfig.OrganizationUri, serverConfig.HomeRealmUri, serverConfig.Credentials, serverConfig.DeviceCredentials))
@@ -137,76 +91,35 @@ namespace Microsoft.Crm.Sdk.Samples
                     //<snippetCRUDOperationsDE1>
                     // Instaniate an account object.
                     Entity account = new Entity("account");
-
-                    // Set the required attributes. For account, only the name is required. 
-                    // See the Entity Metadata topic in the SDK documentatio to determine 
-                    // which attributes must be set for each entity.
                     account["name"] = accountModel.AccountName;
 
-                    // Create an account record named Fourth Coffee.
-                    //_accountId = _service.Create(account);
+                    //Create a query expression specifying the link entity alias and the columns of the link entity that you want to return
+                    QueryExpression qe = new QueryExpression();
+                    qe.EntityName = "account";
+                    qe.ColumnSet = new ColumnSet();
+                    qe.ColumnSet.Columns.Add("name");
+                    qe.ColumnSet.Columns.Add("ownerid");
+                    qe.ColumnSet.Columns.Add("accountid");
 
-                    //Console.Write("{0} {1} created, ", account.LogicalName, account.Attributes["name"]);
+                    qe.LinkEntities.Add(new LinkEntity("account", "contact", "primarycontactid", "contactid", JoinOperator.Inner));
+                    qe.LinkEntities[0].Columns.AddColumns("firstname", "lastname");
+                    qe.LinkEntities[0].EntityAlias = "primarycontact";
 
-                    // Create a column set to define which attributes should be retrieved.
-                    ColumnSet attributes = new ColumnSet(new string[] { "name", "ownerid", "address1_postalcode", "address2_postalcode", "revenue", "creditonhold" });
+                    EntityCollection ec = _service.RetrieveMultiple(qe);
 
-                    // Retrieve the account and its name and ownerid attributes.
-                    account = _service.Retrieve(account.LogicalName, _accountId, attributes);
-                    Console.Write("retrieved, ");
+                    Console.WriteLine("Retrieved {0} entities", ec.Entities.Count);
+                    foreach (Entity act in ec.Entities)
+                    {
+                        //if (accountModel.AccountName == (string)act["name"])
+                        //{
+                        Console.WriteLine("account name:" + act["name"]);
+                        Console.WriteLine("owner:" + act["ownerid"]);
+                        Console.WriteLine("owner:" + act["accountid"]);
+                        Console.WriteLine("primary contact first name:" + act["primarycontact.firstname"]);
+                        Console.WriteLine("primary contact last name:" + act["primarycontact.lastname"]);
+                        //}
+                    }
 
-                    Console.WriteLine(account["name"]);
-                    Console.WriteLine(account["ownerid"]);
-
-                    //// Update the postal code attribute.
-                    //if (accountModel.AdressRow1 != string.Empty)
-                    //{
-                    //    account["address1_postalcode"] = accountModel.AdressRow1;
-                    //}
-                    //else
-                    //{
-                    //    account["address1_postalcode"] = null;
-                    //}
-
-                    //// The address 2 postal code was set accidentally, so set it to null.
-                    //if (accountModel.AdressRow2 != string.Empty)
-                    //{
-                    //    account["addres2_postalcode"] = accountModel.AdressRow2;
-                    //}
-                    //else
-                    //{
-                    //    account["address2_postalcode"] = null;
-                    //}
-
-                    //// Shows use of Money.
-                    //account["revenue"] = new Money(accountModel.Revenue);
-
-                    //// Shows use of boolean.
-                    //account["creditonhold"] = accountModel.CreditOnHold;
-
-                    //// Update the account.
-                    //_service.Update(account);
-                    //Console.WriteLine("and updated.");
-
-                    //// Delete the account.
-                    //bool deleteRecords = true;
-
-                    //if (promptForDelete)
-                    //{
-                    //    Console.WriteLine("\nDo you want these entity records deleted? (y/n) [y]: ");
-                    //    String answer = Console.ReadLine();
-
-                    //    deleteRecords = (answer.StartsWith("y") || answer.StartsWith("Y") || answer == String.Empty);
-                    //}
-
-                    //if (deleteRecords)
-                    //{
-                    //    _service.Delete("account", _accountId);
-
-                    //    Console.WriteLine("Entity record(s) have been deleted.");
-                    //}
-
-                    //</snippetCRUDOperationsDE1>
                 }
             }
 
@@ -234,7 +147,7 @@ namespace Microsoft.Crm.Sdk.Samples
                 ServerConnection serverConnect = new ServerConnection();
                 ServerConnection.Configuration config = serverConnect.GetServerConfiguration();
 
-                CRUDOperationsDE app = new CRUDOperationsDE();
+                CreateContactAssociateAccount app = new CreateContactAssociateAccount();
                 app.Run(config, true);
             }
             catch (FaultException<Microsoft.Xrm.Sdk.OrganizationServiceFault> ex)

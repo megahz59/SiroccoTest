@@ -39,6 +39,7 @@
   <PropertyGroup>
     <StartupObject>Microsoft.Crm.Sdk.Samples.CreateContactAssociateAccount</StartupObject>
   </PropertyGroup>
+  <PropertyGroup />
   <ItemGroup>
     <Reference Include="Microsoft.Crm.Sdk.Proxy">
       <HintPath>packages\Microsoft.CrmSdk.CoreAssemblies.7.0.0\lib\net45\Microsoft.Crm.Sdk.Proxy.dll</HintPath>

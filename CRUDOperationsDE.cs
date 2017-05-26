@@ -130,7 +130,7 @@ namespace Microsoft.Crm.Sdk.Samples
 
                 // Connect to the Organization service. 
                 // The using statement assures that the service proxy will be properly disposed.
-                using (_serviceProxy = new OrganizationServiceProxy(serverConfig.OrganizationUri, serverConfig.HomeRealmUri,  serverConfig.Credentials, serverConfig.DeviceCredentials))
+                using (_serviceProxy = new OrganizationServiceProxy(serverConfig.OrganizationUri, serverConfig.HomeRealmUri, serverConfig.Credentials, serverConfig.DeviceCredentials))
                 {
                     _service = (IOrganizationService)_serviceProxy;
 
