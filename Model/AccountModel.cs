@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace Microsoft.Crm.Sdk.Samples.Model
 {
-    class AccountModel
+    public class AccountModel
     {
         public string AccountName { get; set; }
         public string AdressRow1 { get; set; }
         public string AdressRow2 { get; set; }
         public int Revenue { get; set; }
         public bool CreditOnHold { get; set; }
+
+        public string contactFName { get; set; }
+        public string contactLName { get; set; }
     }
 }

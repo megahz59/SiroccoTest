@@ -71,7 +71,8 @@
   <ItemGroup>
     <Compile Include="AssociateDisassociateDE.cs" />
     <Compile Include="CompoundCreateUpdateDE.cs" />
-    <Compile Include="CreateContactAssociateAccount.cs" />
+    <Compile Include="CreateContactAssociate.cs" />
+    <Compile Include="CreateContactAssociateCompany.cs" />
     <Compile Include="CrmServiceHelpers.cs" />
     <Compile Include="CRUDOperationsDE.cs" />
     <Compile Include="DeviceIdManager.cs" />
@@ -111,5 +112,6 @@
   </Target>
   <Target Name="AfterBuild">
   </Target>
+  <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   -->
 </Project>

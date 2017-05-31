@@ -129,9 +129,6 @@ namespace Microsoft.Crm.Sdk.Samples
             setupContact["firstname"] = "Anders";
             setupContact["lastname"] = "Eliasson";
                 
-            _contactId = _service.Create(setupContact);
-            Console.WriteLine("Created {0} {1}", setupContact["firstname"], setupContact["lastname"]);
-
             // Instantiate an account entity record and set its property values.
             Entity setupAccount1 = new Entity("account");
             setupAccount1["name"] = "Volvo AB";
