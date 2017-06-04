@@ -36,7 +36,7 @@ namespace Microsoft.Crm.Sdk.Samples
     /// If you want to run this sample repeatedly, you have the option to 
     /// delete all the records created at the end of execution.
     /// </summary>
-    public class CreateContactAssociate
+    public class CreateContactAssociateCompany
     {
         #region Class Level Members
         /// <summary>
@@ -132,11 +132,11 @@ namespace Microsoft.Crm.Sdk.Samples
                     }
                     else
                     {
-                        EntityReferenceCollection myEntityReferenceCollection = CreateAContact(_accountId, account);
+                        //EntityReferenceCollection myEntityReferenceCollection = CreateAContact(_accountId, account);
 
-                        //EntityReferenceCollection myEntityReferenceCollection = CreateContact(_accountId);
+                        EntityReferenceCollection myEntityReferenceCollection = CreateContact(_accountId);
 
-                        //AssociateConctactWithAccount(myEntityReferenceCollection);
+                        AssociateConctactWithAccount(myEntityReferenceCollection);
                     }
                 }
 
@@ -263,7 +263,7 @@ namespace Microsoft.Crm.Sdk.Samples
         public void AssociateConctactWithAccount(EntityReferenceCollection relatedEntities)
         {
             // Create an object that defines the relationship between the contact and account.
-            Relationship relationship = new Relationship("contact_as_primary_contact");
+            Relationship relationship = new Relationship("contact_customer_accounts");
             //Relationship relationship = new Relationship("contact_as_responsible_contact");
 
             //Associate the contact with the account(s).
@@ -288,7 +288,7 @@ namespace Microsoft.Crm.Sdk.Samples
                 ServerConnection serverConnect = new ServerConnection();
                 ServerConnection.Configuration config = serverConnect.GetServerConfiguration();
 
-                CreateContactAssociateOwner app = new CreateContactAssociateOwner();
+                CreateContactAssociateCompany app = new CreateContactAssociateCompany();
                 app.Run(config, true);
             }
             catch (FaultException<Microsoft.Xrm.Sdk.OrganizationServiceFault> ex)

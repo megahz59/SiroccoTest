@@ -36,7 +36,7 @@ namespace Microsoft.Crm.Sdk.Samples
     /// If you want to run this sample repeatedly, you have the option to 
     /// delete all the records created at the end of execution.
     /// </summary>
-    public class CreateContactAssociateOwner
+    public class CreateContactAssociate
     {
         #region Class Level Members
         /// <summary>
@@ -288,7 +288,7 @@ namespace Microsoft.Crm.Sdk.Samples
                 ServerConnection serverConnect = new ServerConnection();
                 ServerConnection.Configuration config = serverConnect.GetServerConfiguration();
 
-                CreateContactAssociateOwner app = new CreateContactAssociateOwner();
+                CreateContactAssociate app = new CreateContactAssociate();
                 app.Run(config, true);
             }
             catch (FaultException<Microsoft.Xrm.Sdk.OrganizationServiceFault> ex)
