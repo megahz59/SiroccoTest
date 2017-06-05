@@ -49,26 +49,32 @@ namespace Microsoft.Crm.Sdk.Samples
         //private Guid _accountId;
         private Guid _contactId;
         private Guid _accountId;
-        private string accountName;
-        private string foundAccountName;
+
         private EntityReference foundOwnerId;
         private OrganizationServiceContext _orgContext;
+
+        private string accountName;
+        private string foundAccountName;
+
         private string fName;
         private string lName;
+        private string Address1_Line1;
+        private string Address1_City;
+        private string Address1_Country;
+        private string Address1_PostalCode;
+        private string Telephone1;
 
         #endregion Class Level Members
 
         #region How To Sample Code
         /// <summary>
         /// Create and configure the organization service proxy.
-        /// Create an account record
-        /// Retrieve the account record
-        /// Update the account record
-        /// Optionally delete any entity records that were created for this sample.
+        /// Find and Retrieve the account record
+        /// Create a contact
+        /// Update contact's field
+        /// Associate account with the created contact
         /// </summary>
         /// <param name="serverConfig">Contains server connection information.</param>
-        /// <param name="promptForDelete">When True, the user will be prompted to delete
-        /// all created entities.</param>
         public void Run(ServerConnection.Configuration serverConfig, bool promptForDelete)
         {
             while (true)
@@ -101,7 +107,6 @@ namespace Microsoft.Crm.Sdk.Samples
 
             while (true)
             {
-
                 Console.Write("Contacts Last Name: ");
                 lName = Console.ReadLine();
                 if (lName != string.Empty)
@@ -111,6 +116,62 @@ namespace Microsoft.Crm.Sdk.Samples
                 else
                 {
                     Console.WriteLine("Contact Name can't be empty!");
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Contacts Street Name: ");
+                Address1_Line1 = Console.ReadLine();
+                if (Address1_Line1 != string.Empty)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Street Name can't be empty!");
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Contacts Postal Code: ");
+                Address1_PostalCode = Console.ReadLine();
+                if (Address1_PostalCode != string.Empty)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Postal Code can't be empty!");
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Contacts City Name: ");
+                Address1_City = Console.ReadLine();
+                if (Address1_City != string.Empty)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("City Name can't be empty!");
+                }
+            }
+
+            while (true)
+            {
+                Console.Write("Contacts Telephone Number: ");
+                Telephone1 = Console.ReadLine();
+                if (Telephone1 != string.Empty)
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Telephone Number can't be empty!");
                 }
             }
 
@@ -132,8 +193,6 @@ namespace Microsoft.Crm.Sdk.Samples
                     }
                     else
                     {
-                        //EntityReferenceCollection myEntityReferenceCollection = CreateAContact(_accountId, account);
-
                         EntityReferenceCollection myEntityReferenceCollection = CreateContact(_accountId);
 
                         AssociateConctactWithAccount(myEntityReferenceCollection);
@@ -156,13 +215,6 @@ namespace Microsoft.Crm.Sdk.Samples
             Entity account = new Entity("account");
             account["name"] = accountName;
 
-            AttributeCollection col = account.Attributes;
-
-            foreach (var item in col)
-            {
-                Console.WriteLine(item);
-            }
-
             //Create a query expression specifying the link entity alias and the columns of the link entity that you want to return
             QueryExpression qe = new QueryExpression();
             qe.EntityName = "account";
@@ -171,74 +223,27 @@ namespace Microsoft.Crm.Sdk.Samples
             qe.ColumnSet.Columns.Add("ownerid");
             qe.ColumnSet.Columns.Add("accountid");
 
-            //qe.LinkEntities.Add(new LinkEntity("account", "contact", "primarycontactid", "contactid", JoinOperator.Inner));
-            //qe.LinkEntities[0].Columns.AddColumns("firstname", "lastname");
-            //qe.LinkEntities[0].EntityAlias = "primarycontact";
-
             EntityCollection ec = _service.RetrieveMultiple(qe);
 
             Console.WriteLine("Retrieved {0} entities", ec.Entities.Count);
 
             foreach (Entity act in ec.Entities)
             {
-                //col = act.Attributes;
-
-                //foreach (var item in col)
-                //{
-                //    Console.WriteLine("item: " + item);
-                //}
 
                 foundAccountName = (string)act["name"];
                 foundOwnerId = (EntityReference)act["ownerid"];
-                //Console.WriteLine("account name:" + act["name"]);
-                //Console.WriteLine("owner:" + foundOwnerId.LogicalName);
                 Console.WriteLine("Search account: {0}, Found account: {1}", accountName, foundAccountName);
                 if (accountName == foundAccountName)
                 {
-                    Console.WriteLine("accountid:" + act["accountid"]);
-                    Console.WriteLine("account name:" + act["name"]);
-                    Console.WriteLine("owner:" + foundOwnerId.LogicalName);
-                    Console.WriteLine("Account found {0}", foundAccountName);
+                    //Console.WriteLine("accountid:" + act["accountid"]);
+                    //Console.WriteLine("account name:" + act["name"]);
+                    //Console.WriteLine("owner:" + foundOwnerId.LogicalName);
+                    //Console.WriteLine("Account found {0}", foundAccountName);
                     account = act;
                     break;
                 }
             }
             return account;
-        }
-
-        public EntityReferenceCollection CreateAContact(Guid _accountId, Entity account)
-        {
-            Contact contact = new Contact()
-            {
-                FirstName = fName,
-                LastName = lName,
-                Address1_Line1 = "23 Market St.",
-                Address1_City = "Sammamish",
-                Address1_StateOrProvince = "MT",
-                Address1_PostalCode = "99999",
-                Telephone1 = "12345678",
-                EMailAddress1 = fName + "." + lName + "@" + accountName + ".com",
-                Id = Guid.NewGuid()
-            };
-            _contactId = contact.Id;
-            _orgContext.AddObject(contact);
-
-            Console.WriteLine("Service created with First Name {0} and Last Name {1}", contact.FirstName, contact.LastName);
-
-            //Create a collection of the entity id(s) that will be associated to the contact.
-            EntityReferenceCollection relatedEntities = new EntityReferenceCollection();
-            relatedEntities.Add(new EntityReference("account", _accountId));
-
-            _orgContext.Attach(account);
-            //_orgContext.Attach(contact);
-            _orgContext.AddLink(
-                account,
-                new Relationship("contact_customer_accounts"),
-                contact);
-            //SaveChangesHelper(contact, account);
-            Console.WriteLine("and adding contact to account's contact list.");
-
-            return relatedEntities;
         }
 
         public EntityReferenceCollection CreateContact(Guid _accountId)
@@ -247,6 +252,11 @@ namespace Microsoft.Crm.Sdk.Samples
             Entity setupContact = new Entity("contact");
             setupContact["firstname"] = fName;
             setupContact["lastname"] = lName;
+            setupContact["address1_line1"] = Address1_Line1;
+            setupContact["address1_postalcode"] = Address1_PostalCode;
+            setupContact["address1_city"] = Address1_City;
+            setupContact["telephone1"] = Telephone1;
+            setupContact["emailaddress1"] = fName.ToLower() + "." + lName.ToLower() + "@" + accountName.ToLower().Replace(" ", "");
 
 
             _contactId = _service.Create(setupContact);
@@ -264,11 +274,11 @@ namespace Microsoft.Crm.Sdk.Samples
         {
             // Create an object that defines the relationship between the contact and account.
             Relationship relationship = new Relationship("contact_customer_accounts");
-            //Relationship relationship = new Relationship("contact_as_responsible_contact");
 
             //Associate the contact with the account(s).
             _service.Associate("contact", _contactId, relationship, relatedEntities);
 
+            Console.WriteLine("and adding {0} {1} to {2}'s contact list.", fName, lName, accountName);
             Console.WriteLine("The entities have been associated.");
         }
 
@@ -346,4 +356,3 @@ namespace Microsoft.Crm.Sdk.Samples
         #endregion Main
     }
 }
-//</snippetCRUDOperationsDE>
